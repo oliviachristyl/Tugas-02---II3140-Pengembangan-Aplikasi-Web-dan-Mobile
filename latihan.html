@@ -4,7 +4,45 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Latihan Soal Hukum Ohm</title>
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Styling untuk progress bar */
+    .progress {
+        width: 100%;
+        background-color: #f3f3f3;
+        border-radius: 10px;
+        height: 20px;
+        margin-top: 20px;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background-color: #4caf50; /* Warna progress */
+        border-radius: 10px;
+        text-align: center;
+        color: white;
+        line-height: 20px; /* Menampilkan angka di tengah progress bar */
+    }
+
+    /* Styling umum */
+    body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+    }
+
+    .question {
+        margin-bottom: 20px;
+    }
+
+    .question label {
+        display: block;
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+
+    input[type="radio"] {
+        margin-right: 10px;
+    }
+</style>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database.js"></script>
@@ -17,9 +55,10 @@
   </header>
 
   <section>
-    <div class="progress-bar">
-      <label for="progress">Progress:</label>
-      <progress id="progress" value="0" max="100"></progress>
+    <div class="progress">
+      <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            0%
+      </div>
     </div>
 
     <form id="quizForm">
@@ -104,96 +143,44 @@
         <label><input type="radio" name="q10" value="A"> A) Semua komponen terhubung paralel</label><br>
         <label><input type="radio" name="q10" value="B"> B) Semua komponen terhubung seri</label><br>
         <label><input type="radio" name="q10" value="C"> C) Campuran antara seri dan paralel</label><br>
-        <label><input type="radio" name="q10" value="D"> D) Tidak ada jawaban benar</label><br>
+        <label><input type="radio" name="q10" value="D"> D) Tidak ada jawaban yang benar</label><br>
       </div>
 
-      <button type="button" id="submitButton">Submit</button>
+      <button type="submit">Kirim Jawaban</button>
     </form>
-
-      <button type="button" id="submitButton">Submit</button>
-    </form>
-
-    <div id="result"></div>
   </section>
 
-  <footer>
-    <p>&copy; 2024 Website Latihan Hukum Ohm</p>
-  </footer>
-
   <script>
-    // Konfigurasi Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyD7jiVEry9wX_5b4f8GFr96ke8-ZVex4Vw",
-      authDomain: "vlabproject-33d46.firebaseapp.com",
-      databaseURL: "https://vlabproject-33d46-default-rtdb.firebaseio.com",
-      projectId: "vlabproject-33d46",
-      storageBucket: "vlabproject-33d46.appspot.com",
-      messagingSenderId: "415904434692",
-      appId: "1:415904434692:web:26a6e91b396ec069af0351",
-    };
+    // Fungsi untuk menghitung persentase progress bar
+    function updateProgressBar() {
+      const totalQuestions = 10;
+      let answeredQuestions = 0;
 
-    // Inisialisasi Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    const quizForm = document.getElementById('quizForm');
-    const progressBar = document.getElementById('progress');
-    const resultDiv = document.getElementById('result');
-    const submitButton = document.getElementById('submitButton');
-    let userId = 'user@example.com';
-
-    // Jawaban Benar
-    const correctAnswers = ['D', 'A', 'C', 'B'];
-
-    // Cek jawaban yang diisi user
-    function checkAnswers() {
-      const answers = [];
-      let score = 0;
-      const formData = new FormData(quizForm);
-      formData.forEach((value, key) => {
-        answers.push(value);
-      });
-
-      answers.forEach((answer, index) => {
-        if (answer === correctAnswers[index]) {
-          score += 25; // Masing-masing soal bobot 25 poin
+      // Mengecek jawaban yang dipilih untuk setiap pertanyaan
+      for (let i = 1; i <= totalQuestions; i++) {
+        const radios = document.getElementsByName('q' + i);
+        for (let j = 0; j < radios.length; j++) {
+          if (radios[j].checked) {
+            answeredQuestions++;
+            break;
+          }
         }
-      });
+      }
 
-      // Simpan data ke Firebase
-      db.ref('users/' + userId).set({
-        answers: answers,
-        score: score,
-        submit: true
-      });
-
-      return score;
+      const progress = (answeredQuestions / totalQuestions) * 100;
+      const progressBar = document.getElementById('progress-bar');
+      progressBar.style.width = progress + '%';
+      progressBar.innerText = Math.round(progress) + '%';
     }
 
-    // Update progress bar
-    quizForm.addEventListener('change', () => {
-      const filledAnswers = Array.from(quizForm.elements).filter(el => el.checked).length;
-      progressBar.value = (filledAnswers / 4) * 100;
-    });
+    // Menambahkan event listener untuk setiap pilihan jawaban
+    const form = document.getElementById('quizForm');
+    form.addEventListener('change', updateProgressBar);
 
-    // Submit jawaban
-    submitButton.addEventListener('click', () => {
-      const score = checkAnswers();
-      resultDiv.innerHTML = `Skor Anda: ${score}/100`;
-      submitButton.disabled = true;
-    });
-
-    // Muat data sebelumnya jika ada
-    db.ref('users/' + userId).once('value').then(snapshot => {
-      const userData = snapshot.val();
-      if (userData && userData.submit) {
-        userData.answers.forEach((answer, index) => {
-          const input = document.querySelector(`input[name=q${index + 1}][value=${answer}]`);
-          if (input) input.checked = true;
-        });
-        resultDiv.innerHTML = `Skor Anda: ${userData.score}/100`;
-        submitButton.disabled = true;
-      }
+    // Submit form untuk menunjukkan hasil (bisa dikembangkan lebih lanjut)
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert('Jawaban telah terkirim!');
     });
   </script>
 </body>

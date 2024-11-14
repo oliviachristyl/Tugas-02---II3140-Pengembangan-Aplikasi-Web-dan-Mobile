@@ -2,26 +2,14 @@
 // Inisialisasi Firebase
 // Firebase SDK Imports
 
-// Jawaban Benar (untuk 10 pertanyaan)
-const correctAnswers = ['D', 'A', 'C', 'B', 'A', 'D', 'B', 'A', 'B', 'B'];
-
-// Update progress bar dan cek jawaban
-quizForm.addEventListener('change', () => {
-  const filledAnswers = Array.from(quizForm.elements).filter(el => el.checked).length;
-  progressBar.value = (filledAnswers / 10) * 100;
+// Menambahkan event listener pada setiap elemen input
+document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach((input) => {
+    input.addEventListener('change', updateProgressBar); // Menggunakan 'change' agar langsung terdeteksi saat memilih jawaban
 });
 
-// Submit button
-document.getElementById('submitButton').addEventListener('click', function() {
-  let score = 0;
-  for (let i = 1; i <= 10; i++) {
-    const userAnswer = quizForm['q' + i].value;
-    if (userAnswer === correctAnswers[i - 1]) {
-      score++;
-    }
-  }
-  document.getElementById('result').innerText = `Nilai Anda: ${score} dari 10`;
-});
+// Panggil updateProgressBar saat halaman dimuat untuk set nilai awal progress bar
+document.addEventListener('DOMContentLoaded', updateProgressBar);
+
 
 function openOhmLab() {
     document.querySelector(".topic-section").classList.add("hidden");
