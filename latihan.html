@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Latihan Soal Hukum Ohm</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Latihan Soal Hukum Ohm</h1>
+    <p>Supaya lebih memahami materi ini, mari coba mengerjakan latihan terkait materi Hukum Ohm.</p>
+    <p><a href="ohm.html">Kembali ke Hukum Ohm</a></p>
+  </header>
+
+  <section>
+    <div class="progress-bar">
+      <label for="progress">Progress:</label>
+      <progress id="progress" value="0" max="100"></progress>
+    </div>
+
+    <form id="quizForm">
+      <!-- Pertanyaan 1 -->
+      <div class="question">
+        <p>1. Apa rumus Hukum Ohm?</p>
+        <label><input type="radio" name="q1" value="A"> A) I = V / R</label><br>
+        <label><input type="radio" name="q1" value="B"> B) V = I * R</label><br>
+        <label><input type="radio" name="q1" value="C"> C) R = V / I</label><br>
+        <label><input type="radio" name="q1" value="D"> D) Semua benar</label><br>
+      </div>
+
+      <!-- Pertanyaan 2 -->
+      <div class="question">
+        <p>2. Jika tegangan (V) adalah 10V dan arus (I) adalah 2A, berapakah resistansi (R)?</p>
+        <label><input type="radio" name="q2" value="A"> A) 5Ω</label><br>
+        <label><input type="radio" name="q2" value="B"> B) 20Ω</label><br>
+        <label><input type="radio" name="q2" value="C"> C) 2Ω</label><br>
+        <label><input type="radio" name="q2" value="D"> D) 0.5Ω</label><br>
+      </div>
+
+      <!-- Pertanyaan 3 -->
+      <div class="question">
+        <p>3. Apa satuan dari resistansi?</p>
+        <label><input type="radio" name="q3" value="A"> A) Ampere</label><br>
+        <label><input type="radio" name="q3" value="B"> B) Volt</label><br>
+        <label><input type="radio" name="q3" value="C"> C) Ohm</label><br>
+        <label><input type="radio" name="q3" value="D"> D) Watt</label><br>
+      </div>
+
+      <!-- Pertanyaan 4 -->
+      <div class="question">
+        <p>4. Jika resistansi bertambah, apa yang terjadi pada arus listrik jika tegangan tetap?</p>
+        <label><input type="radio" name="q4" value="A"> A) Arus bertambah</label><br>
+        <label><input type="radio" name="q4" value="B"> B) Arus berkurang</label><br>
+        <label><input type="radio" name="q4" value="C"> C) Arus tetap</label><br>
+        <label><input type="radio" name="q4" value="D"> D) Tidak dapat ditentukan</label><br>
+      </div>
+
+      <div class="question">
+        <p>5. Apa yang terjadi jika panjang kawat bertambah tetapi diameter tetap sama?</p>
+        <label><input type="radio" name="q5" value="A"> A) Resistansi bertambah</label><br>
+        <label><input type="radio" name="q5" value="B"> B) Resistansi berkurang</label><br>
+        <label><input type="radio" name="q5" value="C"> C) Resistansi tetap</label><br>
+        <label><input type="radio" name="q5" value="D"> D) Arus bertambah</label><br>
+      </div>
+
+      <div class="question">
+        <p>6. Sebuah alat elektronik memerlukan 10A pada 220V. Berapa daya yang digunakan?</p>
+        <label><input type="radio" name="q6" value="A"> A) 2200W</label><br>
+        <label><input type="radio" name="q6" value="B"> B) 22W</label><br>
+        <label><input type="radio" name="q6" value="C"> C) 220W</label><br>
+        <label><input type="radio" name="q6" value="D"> D) 2.2kW</label><br>
+      </div>
+
+      <div class="question">
+        <p>7. Apa definisi dari arus listrik?</p>
+        <label><input type="radio" name="q7" value="A"> A) Aliran proton</label><br>
+        <label><input type="radio" name="q7" value="B"> B) Aliran elektron</label><br>
+        <label><input type="radio" name="q7" value="C"> C) Aliran neutron</label><br>
+        <label><input type="radio" name="q7" value="D"> D) Aliran foton</label><br>
+      </div>
+
+      <div class="question">
+        <p>8. Manakah yang termasuk sumber tegangan DC?</p>
+        <label><input type="radio" name="q8" value="A"> A) Baterai</label><br>
+        <label><input type="radio" name="q8" value="B"> B) Generator AC</label><br>
+        <label><input type="radio" name="q8" value="C"> C) Dinamo</label><br>
+        <label><input type="radio" name="q8" value="D"> D) Stop kontak rumah</label><br>
+      </div>
+
+      <div class="question">
+        <p>9. Apa fungsi resistor dalam sebuah rangkaian?</p>
+        <label><input type="radio" name="q9" value="A"> A) Meningkatkan arus</label><br>
+        <label><input type="radio" name="q9" value="B"> B) Mengurangi arus</label><br>
+        <label><input type="radio" name="q9" value="C"> C) Menyimpan energi</label><br>
+        <label><input type="radio" name="q9" value="D"> D) Menyimpan muatan listrik</label><br>
+      </div>
+
+      <div class="question">
+        <p>10. Apa yang dimaksud dengan rangkaian seri?</p>
+        <label><input type="radio" name="q10" value="A"> A) Semua komponen terhubung paralel</label><br>
+        <label><input type="radio" name="q10" value="B"> B) Semua komponen terhubung seri</label><br>
+        <label><input type="radio" name="q10" value="C"> C) Campuran antara seri dan paralel</label><br>
+        <label><input type="radio" name="q10" value="D"> D) Tidak ada jawaban benar</label><br>
+      </div>
+
+      <button type="button" id="submitButton">Submit</button>
+    </form>
+
+      <button type="button" id="submitButton">Submit</button>
+    </form>
+
+    <div id="result"></div>
+  </section>
+
+  <footer>
+    <p>&copy; 2024 Website Latihan Hukum Ohm</p>
+  </footer>
+
+  <script>
+    // Konfigurasi Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyD7jiVEry9wX_5b4f8GFr96ke8-ZVex4Vw",
+      authDomain: "vlabproject-33d46.firebaseapp.com",
+      databaseURL: "https://vlabproject-33d46-default-rtdb.firebaseio.com",
+      projectId: "vlabproject-33d46",
+      storageBucket: "vlabproject-33d46.appspot.com",
+      messagingSenderId: "415904434692",
+      appId: "1:415904434692:web:26a6e91b396ec069af0351",
+    };
+
+    // Inisialisasi Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const quizForm = document.getElementById('quizForm');
+    const progressBar = document.getElementById('progress');
+    const resultDiv = document.getElementById('result');
+    const submitButton = document.getElementById('submitButton');
+    let userId = 'user@example.com';
+
+    // Jawaban Benar
+    const correctAnswers = ['D', 'A', 'C', 'B'];
+
+    // Cek jawaban yang diisi user
+    function checkAnswers() {
+      const answers = [];
+      let score = 0;
+      const formData = new FormData(quizForm);
+      formData.forEach((value, key) => {
+        answers.push(value);
+      });
+
+      answers.forEach((answer, index) => {
+        if (answer === correctAnswers[index]) {
+          score += 25; // Masing-masing soal bobot 25 poin
+        }
+      });
+
+      // Simpan data ke Firebase
+      db.ref('users/' + userId).set({
+        answers: answers,
+        score: score,
+        submit: true
+      });
+
+      return score;
+    }
+
+    // Update progress bar
+    quizForm.addEventListener('change', () => {
+      const filledAnswers = Array.from(quizForm.elements).filter(el => el.checked).length;
+      progressBar.value = (filledAnswers / 4) * 100;
+    });
+
+    // Submit jawaban
+    submitButton.addEventListener('click', () => {
+      const score = checkAnswers();
+      resultDiv.innerHTML = `Skor Anda: ${score}/100`;
+      submitButton.disabled = true;
+    });
+
+    // Muat data sebelumnya jika ada
+    db.ref('users/' + userId).once('value').then(snapshot => {
+      const userData = snapshot.val();
+      if (userData && userData.submit) {
+        userData.answers.forEach((answer, index) => {
+          const input = document.querySelector(`input[name=q${index + 1}][value=${answer}]`);
+          if (input) input.checked = true;
+        });
+        resultDiv.innerHTML = `Skor Anda: ${userData.score}/100`;
+        submitButton.disabled = true;
+      }
+    });
+  </script>
+</body>
+</html>

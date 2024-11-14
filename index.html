@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simulasi Fisika Dasar Virtual bersama Olivia</title>
+    <link rel="stylesheet" href="styles.css" />
+    <!-- Firebase SDK -->
+    <script type="module">
+      // Firebase SDK Imports
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+      import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+      // Konfigurasi Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyD7jiVEry9wX_5b4f8GFr96ke8-ZVex4Vw",
+        authDomain: "vlabproject-33d46.firebaseapp.com",
+        databaseURL: "https://vlabproject-33d46-default-rtdb.firebaseio.com",
+        projectId: "vlabproject-33d46",
+        storageBucket: "vlabproject-33d46.appspot.com",
+        messagingSenderId: "415904434692",
+        appId: "1:415904434692:web:26a6e91b396ec069af0351",
+      };
+
+      // Inisialisasi Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+
+      // Fungsi untuk logout
+      async function logout() {
+        try {
+          await signOut(auth);
+          alert("Logout berhasil!");
+          window.location.href = "auth.html"; // Arahkan ke halaman login setelah logout
+        } catch (error) {
+          alert(`Logout gagal: ${error.message}`);
+        }
+      }
+
+      // Event listener untuk tombol logout
+      window.addEventListener("load", () => {
+        document.getElementById("logoutButton").addEventListener("click", logout);
+
+        // Memeriksa status autentikasi saat halaman dimuat
+        onAuthStateChanged(auth, (user) => {
+          if (!user) {
+            // Jika tidak ada pengguna yang login, arahkan ke halaman auth.html
+            window.location.href = "auth.html";
+          }
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <header>
+      <h1>Simulasi Fisika Dasar Virtual bersama Olivia</h1>
+      <button id="logoutButton">Logout</button>
+    </header>
+
+    <section class="topic-section">
+      <h2>Pilih Topik</h2>
+      <div class="topics">
+        <div class="topic available" onclick="window.location.href='ohm.html'">
+          Rangkaian DC - Hukum Ohm
+        </div>
+        <div class="topic locked">
+          Rangkaian DC - Hukum Kirchoff
+          <span class="lock-icon">🔒</span>
+        </div>
+        <div class="topic locked">
+          Gelombang Mekanik
+          <span class="lock-icon">🔒</span>
+        </div>
+        <div class="topic locked">
+          Gerak Osilasi
+          <span class="lock-icon">🔒</span>
+        </div>
+        <div class="topic locked">
+          Termodinamika
+          <span class="lock-icon">🔒</span>
+        </div>
+        <div class="topic locked">
+          Suhu dan Kalor
+          <span class="lock-icon">🔒</span>
+        </div>
+        <div class="topic locked">
+          Gelombang Elektromagnetik
+          <span class="lock-icon">🔒</span>
+        </div>
+        <div class="topic locked">
+          Listrik Statis
+          <span class="lock-icon">🔒</span>
+        </div>
+        <div class="topic locked">
+          Listrik Dinamis
+          <span class="lock-icon">🔒</span>
+        </div>
+        <div class="topic locked">
+          Hukum Newton
+          <span class="lock-icon">🔒</span>
+        </div>
+        <div class="topic coming-soon" onclick="comingSoon()">Coming Soon</div>
+      </div>
+    </section>
+
+    <footer>
+      © 2024 Laboratorium Virtual Fisika Dasar TPB ITB. All Rights Reserved.
+    </footer>
+
+    <!-- Custom Scripts -->
+    <script>
+      // Fungsi untuk menangani topik yang belum tersedia
+      function comingSoon() {
+        alert("Topik lainnya akan tersedia segera!");
+      }
+    </script>
+  </body>
+</html>

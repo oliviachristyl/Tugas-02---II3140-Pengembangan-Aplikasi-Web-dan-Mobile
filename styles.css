@@ -1,0 +1,223 @@
+/* 18222036 - Olivia Christy Lismanto */
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .topic-section, .lab-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  footer {
+    background-color: #001f3f;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    width: 100%;
+    margin-top: auto; 
+  }
+  
+  header {
+    background-color: #87cefa;
+    padding: 20px;
+    text-align: center;
+    color: white;
+  }
+  
+  h1 {
+    font-size: 2em;
+  }
+  
+  .topic-section {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  h2 {
+    font-size: 1.5em;
+    color: #333;
+  }
+  
+  .topics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  @media (max-width: 768px) {
+    .topics {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .topics {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .topic {
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    text-align: center;
+    position: relative;
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .topic:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .topic.locked {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .lock-icon {
+    display: block;
+    font-size: 24px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .lab-section {
+    display: flex; /* Pastikan lab-section tetap terlihat */
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .input-container {
+    margin: 10px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    background-color: #87cefa;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  button:hover {
+    background-color: #4682b4;
+  }
+  
+  #result {
+    margin-top: 20px;
+  }
+  
+  .hidden {
+    display: none;
+  }
+
+ /* Styling untuk slider container */
+ .slider-container {
+    display: flex; /* Menggunakan flexbox untuk menyusun elemen secara horizontal */
+    align-items: center; /* Memastikan elemen sejajar secara vertikal */
+    margin: 20px 0; /* Jarak vertikal antar slider */
+  }
+  
+  .slider-item {
+    display: flex; /* Menggunakan flexbox untuk item slider */
+    align-items: center; /* Memastikan label dan slider sejajar secara vertikal */
+    flex: 1; /* Mengatur item slider agar mengisi ruang yang tersedia */
+  }
+  
+  .slider {
+    flex: 1; /* Slider akan mengisi ruang yang tersedia */
+    margin: 0 10px; /* Jarak antara slider dan label min/max */
+  }
+  
+  label {
+    width: 50px; /* Lebar label */
+    text-align: center; /* Mengatur teks rata tengah */
+  }
+  
+  
+  input[type="range"]::-webkit-slider-thumb {
+    background-color: #003366; /* Biru tua */
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  input[type="range"]::-moz-range-thumb {
+    background-color: #003366; /* Biru tua */
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  
+  #circuit-visualization {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  
+  #circuit-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+  
+
+  .video-container {
+    margin-top: 20px;
+  }
+  
+  canvas {
+    max-width: 80%;
+    height: auto;
+    border: 1px solid #ccc;
+  }
+  
+  #graphs {
+    max-width: 80%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  canvas {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  @media (max-width: 768px) {
+    #graphs {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  /* Pastikan lab-section tidak disembunyikan di layar besar */
+  @media (min-width: 769px) {
+    .lab-section {
+      display: flex; /* Tetap flex untuk desktop */
+    }
+  }
+  

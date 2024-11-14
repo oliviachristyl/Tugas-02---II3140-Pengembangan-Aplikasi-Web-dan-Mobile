@@ -1,0 +1,317 @@
+<!-- 18222036 - Olivia Christy Lismanto -->
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Percobaan Hukum Ohm - Simulasi Fisika Dasar Virtual bersama Olivia
+    </title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Firebase SDK -->
+    <script type="module">
+      // Firebase SDK Imports
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+      import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+      // Konfigurasi Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyD7jiVEry9wX_5b4f8GFr96ke8-ZVex4Vw",
+        authDomain: "vlabproject-33d46.firebaseapp.com",
+        databaseURL: "https://vlabproject-33d46-default-rtdb.firebaseio.com",
+        projectId: "vlabproject-33d46",
+        storageBucket: "vlabproject-33d46.appspot.com",
+        messagingSenderId: "415904434692",
+        appId: "1:415904434692:web:26a6e91b396ec069af0351",
+      };
+
+      // Inisialisasi Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+
+      // Fungsi untuk logout
+      async function logout() {
+        try {
+          await signOut(auth);
+          alert("Logout berhasil!");
+          window.location.href = "auth.html"; // Arahkan ke halaman login setelah logout
+        } catch (error) {
+          alert(`Logout gagal: ${error.message}`);
+        }
+      }
+
+      // Event listener untuk tombol logout
+      window.addEventListener("load", () => {
+        document.getElementById("logoutButton").addEventListener("click", logout);
+
+        // Memeriksa status autentikasi saat halaman dimuat
+        onAuthStateChanged(auth, (user) => {
+          if (!user) {
+            // Jika tidak ada pengguna yang login, arahkan ke halaman auth.html
+            window.location.href = "auth.html";
+          }
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <header onclick="window.location.href='index.html'">
+      <h1>Simulasi Fisika Dasar Virtual bersama Olivia</h1>
+      <button id="logoutButton">Logout</button>
+    </header>
+
+    <section id="ohm-lab" class="lab-section">
+      <h2>Rangkaian DC - Hukum Ohm</h2>
+      <p>
+        Dalam dunia elektronika, salah satu fondasi dasar yang sering kita temui adalah rangkaian arus searah atau rangkaian DC (Direct Current). 
+        Rangkaian ini merupakan jenis rangkaian di mana arus listrik mengalir searah melalui konduktor. 
+        Rangkaian DC banyak digunakan dalam perangkat sehari-hari seperti baterai, lampu senter, dan berbagai alat elektronik. 
+        Untuk memahami bagaimana komponen dalam rangkaian DC berinteraksi satu sama lain, salah satu konsep penting yang harus dipahami adalah Hukum Ohm.
+        Hukum Ohm menyatakan bahwa arus listrik yang mengalir melalui penghantar
+        antara dua titik sebanding dengan voltase di antara kedua titik
+        tersebut. Secara matematis, dinyatakan sebagai I = V/R, di mana V
+        adalah voltase, I adalah arus, dan R adalah hambatan.
+      </p>
+      <p>Masukkan nilai voltase dan hambatan untuk menghitung arus listrik.</p>
+      <div class="input-container">
+        <label for="voltage">Voltase (V): </label>
+        <input
+          type="number"
+          id="voltage"
+          min="0"
+          max="1000"
+          step="0.1"
+          required
+          placeholder="Masukkan V"
+          oninput="updateVoltageSlider()"
+          onblur="checkEmptyInput('voltage', 'voltage-slider', 0)"
+        />
+        <label for="voltage_satuan"> V </label>
+      </div>
+
+      <div class="slider-container">
+        <div class="slider-item">
+          <label id="voltage-min-label" for="voltage-slider">0 V</label>
+          <input
+            type="range"
+            id="voltage-slider"
+            min="0"
+            max="1000"
+            step="1"
+            value="0"
+            oninput="updateVoltageInput()"
+            class="slider"
+          />
+          <label id="voltage-max-label" for="voltage-slider">1000 V</label>
+        </div>
+      </div>
+      
+
+      <!-- Input dan Slider untuk Hambatan -->
+      <div class="input-container">
+        <label for="resistance">Hambatan (R): </label>
+        <input
+          type="number"
+          id="resistance"
+          min="1"
+          max="1000"
+          step="0.1"
+          required
+          placeholder="Masukkan R"
+          oninput="updateResistanceSlider()"
+          onblur="checkEmptyInput('resistance', 'resistance-slider', 1)" 
+        />
+        <label for="resistance_satuan"> Ω </label>
+      </div>
+
+      <div class="slider-container">
+        <div class="slider-item">
+          <label id="resistance-min-label" for="resistance-slider">1 Ω</label>
+          <input
+            type="range"
+            id="resistance-slider"
+            min="1"
+            max="1000"
+            step="1"
+            value="1"
+            oninput="updateResistanceInput()"
+            class="slider"
+          />
+          <label id="resistance-max-label" for="resistance-slider">1000 Ω</label>
+        </div>
+      </div>
+      
+      <button onclick="calculateCurrent()">Hitung Arus</button>
+      <div id="result">
+        <p>Arus Listrik (I): <span id="current">0</span> A</p>
+      </div>
+      <p>Grafik di bawah ini menunjukkan hubungan antara masing-masing komponen Hukum Ohm berdasarkan masukan input yang telah diisi untuk menghitung arus listrik.</p>
+      <br/>
+      <h3>Grafik Hukum Ohm</h3>
+      <br/>
+      <div id="graphs">
+        <p>Grafik Arus - Hambatan</p>
+        <canvas id="currentResistanceGraph" width="400" height="200"></canvas>
+        <br />
+        <p>Grafik Arus - Voltase</p>
+        <canvas id="voltCurrentGraph" width="400" height="200"></canvas>
+        <br />
+        <p>Grafik Hambatan - Voltase</p>
+        <canvas id="voltResistanceGraph" width="400" height="200"></canvas>
+      </div>
+      <script>
+        let charts = {}; // Menyimpan grafik untuk memperbarui nanti
+
+        function initializeEmptyCharts() {
+          charts.currentResistance = new Chart(
+            document.getElementById("currentResistanceGraph"),
+            {
+              type: "line",
+              data: {
+                labels: [], // Data awal kosong
+                datasets: [
+                  {
+                    label: "Arus (A)",
+                    data: [], // Data awal kosong
+                    borderColor: "black",
+                    backgroundColor: "white",
+                    fill: false,
+                    borderWidth: 2,
+                  },
+                ],
+              },
+              options: {
+                scales: {
+                  x: {
+                    title: { display: true, text: "Hambatan (Ω)" },
+                    min: 1,
+                    max: 1000,
+                  },
+                  y: {
+                    title: { display: true, text: "Arus (A)" },
+                    min: 0,
+                    max: 1000,
+                  },
+                },
+              },
+            }
+          );
+
+          charts.voltCurrent = new Chart(
+            document.getElementById("voltCurrentGraph"),
+            {
+              type: "line",
+              data: {
+                labels: [],
+                datasets: [
+                  {
+                    label: "Arus (A)",
+                    data: [],
+                    borderColor: "black",
+                    backgroundColor: "white",
+                    fill: false,
+                    borderWidth: 2,
+                  },
+                ],
+              },
+              options: {
+                scales: {
+                  x: {
+                    title: { display: true, text: "Voltase (V)" },
+                    min: 0,
+                    max: 1000,
+                  },
+                  y: {
+                    title: { display: true, text: "Arus (A)" },
+                    min: 0,
+                    max: 1000,
+                  },
+                },
+              },
+            }
+          );
+
+          charts.voltResistance = new Chart(
+            document.getElementById("voltResistanceGraph"),
+            {
+              type: "line",
+              data: {
+                labels: [],
+                datasets: [
+                  {
+                    label: "Hambatan (Ω)",
+                    data: [],
+                    borderColor: "black",
+                    backgroundColor: "white",
+                    fill: false,
+                    borderWidth: 2,
+                  },
+                ],
+              },
+              options: {
+                scales: {
+                  x: {
+                    title: { display: true, text: "Voltase (V)" },
+                    min: 0,
+                    max: 1000,
+                  },
+                  y: {
+                    title: { display: true, text: "Hambatan (Ω)" },
+                    min: 1,
+                    max: 1000,
+                  },
+                },
+              },
+            }
+          );
+        }
+
+        // Memanggil fungsi untuk inisialisasi grafik kosong
+        initializeEmptyCharts();
+      </script>
+      <p>
+        Hukum Ohm menyatakan bahwa besar arus listrik yang mengalir melalui sebuah penghantar akan berbanding lurus dengan beda potensial atau tegangan yang diterapkan kepadanya, dan berbanding terbalik dengan hambatannya. Secara matematis, dirumuskan sebagai berikut :
+      </p>
+      <div id="circuit-visualization">
+        <img src="hukum_ohm.png" alt="Ohm" id="circuit-image" />
+      </div>
+      <p><em>Source: hmjfisika-uinam.org</em></p>
+      <p>
+        Ini berarti bahwa jika tegangan yang diberikan pada sebuah rangkaian meningkat sementara hambatannya tetap, arus yang mengalir akan bertambah. Sebaliknya, jika hambatan meningkat sementara tegangannya tetap, arus yang mengalir akan berkurang. Jadi, bisa disimpulkan bahwa arus berbanding lurus dengan tegangan, namun arus berbanding terbalik dengan hambatan. Hukum ini membantu menjelaskan bagaimana perubahan tegangan atau hambatan memengaruhi besarnya arus dalam suatu rangkaian.
+      </p>
+      <p>Coba simak video di bawah ini untuk lebih memahami materi</p> <!-- Penjelasan Sebelum Video Pembelajaran-->
+      <div class="video-container">
+        <h3>Video Pembelajaran</h3>
+        <iframe
+          width="560"
+          height="315"
+          src="https://www.youtube.com/embed/O1R9MgFnocQ?si=LmMxoWeSXQsPRxX9"
+          title="YouTube video player"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+        ></iframe>
+        <p><em>Source: Budi Adiperdana</em></p> 
+        <br />
+        <p>Dalam rangka mendalami konsep yang diajarkan dalam modul ini, penting bagi kita untuk memahami mekanisme dan metode praktikum atau percobaan yang dapat dilakukan. 
+          Pemahaman ini akan membantu kita menerapkan teori yang telah dipelajari secara lebih efektif. 
+          Untuk memahami lebih dalam mekanisme dan metode praktikum pada modul ini, silakan tonton kedua video berikut ini.</p> <!-- Penjelasan Sebelum Video Praktikum-->
+        <br />
+        <h3>Video Praktikum</h3>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/c44Apr07FuQ?si=UMuOHKZOBw0xwXR_" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <p><em>Source: Laboratorium Fisika Dasar ITB</em></p> 
+      </div>
+      <br />
+      <button onclick="window.location.href='index.html'" style="background-color: #00008B; color: white; padding: 10px 20px; border: none; cursor: pointer;">
+        Kembali
+      </button>
+      <br />
+    </section>
+    <footer>
+      © 2024 Laboratorium Virtual Fisika Dasar TPB ITB. All Rights Reserved.
+    </footer>
+    <script src="script.js"></script>
+  </body>
+</html>
