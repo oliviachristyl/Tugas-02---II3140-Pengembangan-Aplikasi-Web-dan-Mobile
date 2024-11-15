@@ -5,8 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Latihan Firebase</title>
     <style>
-        .progress-container {
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #333;
+        }
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        button {
+          margin-top: 10px;
+        }
+        label {
+            font-size: 16px;
+            color: #555;
+        }
+        input[type="text"] {
             width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .button-container button {
+            flex: 1;
+            max-width: 180px;
+            padding: 10px;
+            background-color: #87cefa;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .button-container button:hover {
+            background-color: #4682b4;
+        }
+        .button-container button:disabled {
+            background-color: gray;
+            cursor: not-allowed;
+        }
+        .progress-container {
+            width: 680px;
+            margin: 0 auto;
             background-color: #f3f3f3;
             border-radius: 10px;
             margin-top: 20px;
@@ -14,7 +76,7 @@
         .progress-bar {
             height: 20px;
             width: 0%;
-            background-color: #4caf50;
+            background-color: #87cefa;
             border-radius: 10px;
         }
         .notification {
@@ -30,56 +92,58 @@
         .error {
             background-color: red;
         }
-        button[type="button"] {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        #finalResult {
+            display: none;
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        button[type="button"]:disabled {
-            background-color: gray;
-            cursor: not-allowed;
+        #finalResult ul {
+            list-style-type: none;
+            padding: 0;
         }
-        #finalResult p {
-            margin: 10px 0;
+        #finalResult li {
+            font-size: 16px;
+            margin: 5px 0;
         }
     </style>
 </head>
 <body>
     <h1>Latihan Hukum Ohm</h1>
     <form id="quizForm">
-        <div>
+        <div class="form-group">
             <label for="q1">Apa itu Hukum Ohm?</label>
             <input type="text" id="q1" required>
             <button type="button" onclick="saveAnswer('q1')">Save</button>
             <div id="notification1" class="notification"></div>
         </div>
-        <div>
+        <div class="form-group">
             <label for="q2">Bagaimana rumus Hukum Ohm?</label>
             <input type="text" id="q2" required>
             <button type="button" onclick="saveAnswer('q2')">Save</button>
             <div id="notification2" class="notification"></div>
         </div>
-        <div>
+        <div class="form-group">
             <label for="q3">Apa satuan yang digunakan dalam Hukum Ohm?</label>
             <input type="text" id="q3" required>
             <button type="button" onclick="saveAnswer('q3')">Save</button>
             <div id="notification3" class="notification"></div>
         </div>
-        <button type="button" id="submitBtn" onclick="submitQuiz()">Submit</button>
-        <button onclick="window.location.href='index.html'" type="button">
-          Kembali
-        </button>
+
+        <div class="button-container">
+            <button type="button" id="submitBtn" onclick="submitQuiz()">Submit</button>
+            <button type="button" id="backBtn" onclick="goBack()">Kembali</button>
+        </div>
     </form>
 
     <div class="progress-container">
         <div id="progress-bar" class="progress-bar"></div>
     </div>
 
-    <div id="finalResult" style="display: none;">
+    <div id="finalResult">
         <h2>Hasil Akhir:</h2>
         <p id="score"></p>
         <p id="correctAnswers"></p>
@@ -118,6 +182,7 @@
             } else {
                 userEmail = null;
                 alert("User is not logged in!");
+                window.location.href = "auth.html";
             }
         });
 
@@ -133,6 +198,7 @@
         window.saveAnswer = function(questionId) {
             if (!userEmail) {
                 alert("Please log in first.");
+                window.location.href = "auth.html";
                 return;
             }
 
@@ -195,35 +261,17 @@
             }
         }
 
-        // Function to load previous score and show detailed results
+        // Function to load the previous score
         function loadPreviousScore() {
             if (userEmail) {
                 const scoreRef = ref(db, 'score/' + userEmail.replace('.', ','));
                 get(scoreRef).then(snapshot => {
                     if (snapshot.exists()) {
                         const scoreData = snapshot.val();
-                        if (scoreData.nilai) {
-                            // Show score and detailed answers (Correct/Incorrect)
-                            const userRef = ref(db, 'user/' + userEmail.replace('.', ','));
-                            get(userRef).then(snapshot => {
-                                if (snapshot.exists()) {
-                                    const data = snapshot.val();
-                                    let correctAnswersText = "";
-                                    Object.keys(correctAnswers).forEach(questionId => {
-                                        const userAnswer = data[questionId]?.answer || '';
-                                        const isCorrect = userAnswer === correctAnswers[questionId];
-                                        correctAnswersText += `Jawaban untuk ${questionId}: "${correctAnswers[questionId]}" - ${isCorrect ? 'Correct' : 'Incorrect'}\n`;
-                                    });
-
-                                    // Round the score to remove decimals
-                                    const roundedScore = Math.round(scoreData.nilai);
-                                    document.getElementById('score').textContent = `Nilai: ${roundedScore}`;
-                                    document.getElementById('correctAnswers').textContent = `Jawaban yang benar: \n${correctAnswersText}`;
-                                    document.getElementById('finalResult').style.display = "block";
-                                    disableForm();
-                                }
-                            });
-                        }
+                        const correctCount = Object.keys(correctAnswers).filter(questionId => {
+                            return scoreData[questionId] === correctAnswers[questionId];
+                        }).length;
+                        displayFinalResult(correctCount);
                     }
                 });
             }
@@ -231,38 +279,49 @@
 
         // Function to submit the quiz
         window.submitQuiz = function() {
-            if (!userEmail) {
-                alert("Please log in first.");
-                return;
-            }
-
-            const userRef = ref(db, 'score/' + userEmail.replace('.', ','));
-            const score = calculateScore();
-            set(userRef, {
-                nilai: score,
-                timestamp: new Date().toISOString()
-            })
-            .then(() => {
-                loadPreviousScore(); // Refresh the score view after submission
-            });
-        }
-
-        // Function to calculate score
-        function calculateScore() {
             let score = 0;
             Object.keys(correctAnswers).forEach(questionId => {
-                const userAnswer = document.getElementById(questionId).value;
-                if (userAnswer.trim() === correctAnswers[questionId]) {
-                    score += 100 / Object.keys(correctAnswers).length;
+                const userAnswer = document.getElementById(questionId).value.trim();
+                if (userAnswer.toLowerCase() === correctAnswers[questionId].toLowerCase()) {
+                    score++;
                 }
             });
-            return score;
+            saveScore(score);
+            displayFinalResult(score);
         }
 
-        // Function to disable the form after submission
-        function disableForm() {
-          document.getElementById('submitBtn').disabled = true; 
-      }
+        // Function to save score
+        function saveScore(score) {
+            if (userEmail) {
+                const scoreRef = ref(db, 'score/' + userEmail.replace('.', ','));
+                set(scoreRef, {
+                    score: score,
+                    timestamp: new Date().toISOString()
+                });
+            }
+        }
+
+        // Function to display final result
+        function displayFinalResult(score) {
+            const totalQuestions = Object.keys(correctAnswers).length;
+            const correctAnswersList = Object.keys(correctAnswers).map(questionId => {
+                const userAnswer = document.getElementById(questionId).value.trim();
+                if (userAnswer.toLowerCase() === correctAnswers[questionId].toLowerCase()) {
+                    return `<li>${questionId}: Correct</li>`;
+                } else {
+                    return `<li>${questionId}: Incorrect</li>`;
+                }
+            }).join('');
+            
+            document.getElementById("finalResult").style.display = "block";
+            document.getElementById("score").textContent = `Nilai: ${score} / ${totalQuestions}`;
+            document.getElementById("correctAnswers").innerHTML = `<ul>${correctAnswersList}</ul>`;
+        }
+
+        // Function to go back
+        window.goBack = function() {
+            window.history.back();
+        }
     </script>
 </body>
 </html>
