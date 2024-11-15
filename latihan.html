@@ -70,6 +70,9 @@
             <div id="notification3" class="notification"></div>
         </div>
         <button type="button" id="submitBtn" onclick="submitQuiz()">Submit</button>
+        <button onclick="window.location.href='index.html'" class="button">
+          Kembali
+        </button>
     </form>
 
     <div class="progress-container">
@@ -115,7 +118,6 @@
             } else {
                 userEmail = null;
                 alert("User is not logged in!");
-                window.location.href = "auth.html";
             }
         });
 
@@ -131,7 +133,6 @@
         window.saveAnswer = function(questionId) {
             if (!userEmail) {
                 alert("Please log in first.");
-                window.location.href = "auth.html";
                 return;
             }
 
@@ -211,13 +212,13 @@
                                     Object.keys(correctAnswers).forEach(questionId => {
                                         const userAnswer = data[questionId]?.answer || '';
                                         const isCorrect = userAnswer === correctAnswers[questionId];
-                                        correctAnswersText += `<li>Jawaban untuk ${questionId}: "${correctAnswers[questionId]}" (${isCorrect ? 'Correct' : 'Incorrect'})</li>`;
+                                        correctAnswersText += `Jawaban untuk ${questionId}: "${correctAnswers[questionId]}" - ${isCorrect ? 'Correct' : 'Incorrect'}\n`;
                                     });
 
                                     // Round the score to remove decimals
                                     const roundedScore = Math.round(scoreData.nilai);
                                     document.getElementById('score').textContent = `Nilai: ${roundedScore}`;
-                                    document.getElementById('correctAnswers').innerHTML = `Jawaban yang benar: <ul>${correctAnswersText}</ul>`;
+                                    document.getElementById('correctAnswers').textContent = `Jawaban yang benar: \n${correctAnswersText}`;
                                     document.getElementById('finalResult').style.display = "block";
                                     disableForm();
                                 }
@@ -232,7 +233,6 @@
         window.submitQuiz = function() {
             if (!userEmail) {
                 alert("Please log in first.");
-                window.location.href = "auth.html";
                 return;
             }
 
