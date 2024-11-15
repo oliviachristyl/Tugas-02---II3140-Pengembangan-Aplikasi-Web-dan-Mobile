@@ -1,187 +1,132 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Latihan Soal Hukum Ohm</title>
-  <style>
-    /* Styling untuk progress bar */
-    .progress {
-        width: 100%;
-        background-color: #f3f3f3;
-        border-radius: 10px;
-        height: 20px;
-        margin-top: 20px;
-    }
-
-    .progress-bar {
-        height: 100%;
-        background-color: #4caf50; /* Warna progress */
-        border-radius: 10px;
-        text-align: center;
-        color: white;
-        line-height: 20px; /* Menampilkan angka di tengah progress bar */
-    }
-
-    /* Styling umum */
-    body {
-        font-family: Arial, sans-serif;
-        padding: 20px;
-    }
-
-    .question {
-        margin-bottom: 20px;
-    }
-
-    .question label {
-        display: block;
-        font-size: 16px;
-        margin-bottom: 8px;
-    }
-
-    input[type="radio"] {
-        margin-right: 10px;
-    }
-</style>
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latihan Firebase</title>
+    <style>
+        /* Styling for the progress bar */
+        .progress-container {
+            width: 100%;
+            background-color: #f3f3f3;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .progress-bar {
+            height: 20px;
+            width: 0%;
+            background-color: #4caf50;
+            border-radius: 10px;
+        }
+        /* Styling for notification */
+        .notification {
+            margin-top: 10px;
+            padding: 10px;
+            display: none;
+            color: white;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: green;
+        }
+        .error {
+            background-color: red;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>Latihan Soal Hukum Ohm</h1>
-    <p>Supaya lebih memahami materi ini, mari coba mengerjakan latihan terkait materi Hukum Ohm.</p>
-    <p><a href="ohm.html">Kembali ke Hukum Ohm</a></p>
-  </header>
+    <h1>Latihan Hukum Ohm</h1>
+    <form id="quizForm">
+        <div>
+            <label for="q1">Apa itu Hukum Ohm?</label>
+            <input type="text" id="q1" required>
+            <button type="button" onclick="saveAnswer('q1')">Save</button>
+            <div id="notification1" class="notification"></div>
+        </div>
 
-  <section>
-    <div class="progress">
-      <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-            0%
-      </div>
+        <div>
+            <label for="q2">Bagaimana rumus Hukum Ohm?</label>
+            <input type="text" id="q2" required>
+            <button type="button" onclick="saveAnswer('q2')">Save</button>
+            <div id="notification2" class="notification"></div>
+        </div>
+
+        <div>
+            <label for="q3">Apa satuan yang digunakan dalam Hukum Ohm?</label>
+            <input type="text" id="q3" required>
+            <button type="button" onclick="saveAnswer('q3')">Save</button>
+            <div id="notification3" class="notification"></div>
+        </div>
+    </form>
+
+    <div class="progress-container">
+        <div id="progress-bar" class="progress-bar"></div>
     </div>
 
-    <form id="quizForm">
-      <!-- Pertanyaan 1 -->
-      <div class="question">
-        <p>1. Apa rumus Hukum Ohm?</p>
-        <label><input type="radio" name="q1" value="A"> A) I = V / R</label><br>
-        <label><input type="radio" name="q1" value="B"> B) V = I * R</label><br>
-        <label><input type="radio" name="q1" value="C"> C) R = V / I</label><br>
-        <label><input type="radio" name="q1" value="D"> D) Semua benar</label><br>
-      </div>
+    <script type="module">
+        // Firebase SDK Imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-      <!-- Pertanyaan 2 -->
-      <div class="question">
-        <p>2. Jika tegangan (V) adalah 10V dan arus (I) adalah 2A, berapakah resistansi (R)?</p>
-        <label><input type="radio" name="q2" value="A"> A) 5Ω</label><br>
-        <label><input type="radio" name="q2" value="B"> B) 20Ω</label><br>
-        <label><input type="radio" name="q2" value="C"> C) 2Ω</label><br>
-        <label><input type="radio" name="q2" value="D"> D) 0.5Ω</label><br>
-      </div>
+        // Konfigurasi Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyD7jiVEry9wX_5b4f8GFr96ke8-ZVex4Vw",
+            authDomain: "vlabproject-33d46.firebaseapp.com",
+            databaseURL: "https://vlabproject-33d46-default-rtdb.firebaseio.com",
+            projectId: "vlabproject-33d46",
+            storageBucket: "vlabproject-33d46.appspot.com",
+            messagingSenderId: "415904434692",
+            appId: "1:415904434692:web:26a6e91b396ec069af0351",
+        };
 
-      <!-- Pertanyaan 3 -->
-      <div class="question">
-        <p>3. Apa satuan dari resistansi?</p>
-        <label><input type="radio" name="q3" value="A"> A) Ampere</label><br>
-        <label><input type="radio" name="q3" value="B"> B) Volt</label><br>
-        <label><input type="radio" name="q3" value="C"> C) Ohm</label><br>
-        <label><input type="radio" name="q3" value="D"> D) Watt</label><br>
-      </div>
+        // Inisialisasi Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-      <!-- Pertanyaan 4 -->
-      <div class="question">
-        <p>4. Jika resistansi bertambah, apa yang terjadi pada arus listrik jika tegangan tetap?</p>
-        <label><input type="radio" name="q4" value="A"> A) Arus bertambah</label><br>
-        <label><input type="radio" name="q4" value="B"> B) Arus berkurang</label><br>
-        <label><input type="radio" name="q4" value="C"> C) Arus tetap</label><br>
-        <label><input type="radio" name="q4" value="D"> D) Tidak dapat ditentukan</label><br>
-      </div>
+        // Track saved answers
+        const savedQuestions = { q1: false, q2: false, q3: false };
 
-      <div class="question">
-        <p>5. Apa yang terjadi jika panjang kawat bertambah tetapi diameter tetap sama?</p>
-        <label><input type="radio" name="q5" value="A"> A) Resistansi bertambah</label><br>
-        <label><input type="radio" name="q5" value="B"> B) Resistansi berkurang</label><br>
-        <label><input type="radio" name="q5" value="C"> C) Resistansi tetap</label><br>
-        <label><input type="radio" name="q5" value="D"> D) Arus bertambah</label><br>
-      </div>
+        // Function to save the answer
+        window.saveAnswer = function(questionId) {
+            const answer = document.getElementById(questionId).value;
+            const notification = document.getElementById('notification' + questionId.charAt(1));
 
-      <div class="question">
-        <p>6. Sebuah alat elektronik memerlukan 10A pada 220V. Berapa daya yang digunakan?</p>
-        <label><input type="radio" name="q6" value="A"> A) 2200W</label><br>
-        <label><input type="radio" name="q6" value="B"> B) 22W</label><br>
-        <label><input type="radio" name="q6" value="C"> C) 220W</label><br>
-        <label><input type="radio" name="q6" value="D"> D) 2.2kW</label><br>
-      </div>
-
-      <div class="question">
-        <p>7. Apa definisi dari arus listrik?</p>
-        <label><input type="radio" name="q7" value="A"> A) Aliran proton</label><br>
-        <label><input type="radio" name="q7" value="B"> B) Aliran elektron</label><br>
-        <label><input type="radio" name="q7" value="C"> C) Aliran neutron</label><br>
-        <label><input type="radio" name="q7" value="D"> D) Aliran foton</label><br>
-      </div>
-
-      <div class="question">
-        <p>8. Manakah yang termasuk sumber tegangan DC?</p>
-        <label><input type="radio" name="q8" value="A"> A) Baterai</label><br>
-        <label><input type="radio" name="q8" value="B"> B) Generator AC</label><br>
-        <label><input type="radio" name="q8" value="C"> C) Dinamo</label><br>
-        <label><input type="radio" name="q8" value="D"> D) Stop kontak rumah</label><br>
-      </div>
-
-      <div class="question">
-        <p>9. Apa fungsi resistor dalam sebuah rangkaian?</p>
-        <label><input type="radio" name="q9" value="A"> A) Meningkatkan arus</label><br>
-        <label><input type="radio" name="q9" value="B"> B) Mengurangi arus</label><br>
-        <label><input type="radio" name="q9" value="C"> C) Menyimpan energi</label><br>
-        <label><input type="radio" name="q9" value="D"> D) Menyimpan muatan listrik</label><br>
-      </div>
-
-      <div class="question">
-        <p>10. Apa yang dimaksud dengan rangkaian seri?</p>
-        <label><input type="radio" name="q10" value="A"> A) Semua komponen terhubung paralel</label><br>
-        <label><input type="radio" name="q10" value="B"> B) Semua komponen terhubung seri</label><br>
-        <label><input type="radio" name="q10" value="C"> C) Campuran antara seri dan paralel</label><br>
-        <label><input type="radio" name="q10" value="D"> D) Tidak ada jawaban yang benar</label><br>
-      </div>
-
-      <button type="submit">Kirim Jawaban</button>
-    </form>
-  </section>
-
-  <script>
-    // Fungsi untuk menghitung persentase progress bar
-    function updateProgressBar() {
-      const totalQuestions = 10;
-      let answeredQuestions = 0;
-
-      // Mengecek jawaban yang dipilih untuk setiap pertanyaan
-      for (let i = 1; i <= totalQuestions; i++) {
-        const radios = document.getElementsByName('q' + i);
-        for (let j = 0; j < radios.length; j++) {
-          if (radios[j].checked) {
-            answeredQuestions++;
-            break;
-          }
+            if (answer.trim() !== "") {
+                const userRef = ref(db, 'answers/' + questionId);
+                set(userRef, {
+                    answer: answer,
+                    timestamp: new Date().toISOString()
+                })
+                .then(() => {
+                    if (!savedQuestions[questionId]) {
+                        savedQuestions[questionId] = true;
+                        updateProgressBar();
+                    }
+                    notification.classList.remove('error');
+                    notification.classList.add('success');
+                    notification.textContent = "Jawaban berhasil disimpan!";
+                    notification.style.display = "block";
+                })
+                .catch((error) => {
+                    notification.classList.remove('success');
+                    notification.classList.add('error');
+                    notification.textContent = "Error: " + error.message;
+                    notification.style.display = "block";
+                });
+            } else {
+                notification.classList.remove('success');
+                notification.classList.add('error');
+                notification.textContent = "Jawaban tidak boleh kosong!";
+                notification.style.display = "block";
+            }
         }
-      }
 
-      const progress = (answeredQuestions / totalQuestions) * 100;
-      const progressBar = document.getElementById('progress-bar');
-      progressBar.style.width = progress + '%';
-      progressBar.innerText = Math.round(progress) + '%';
-    }
-
-    // Menambahkan event listener untuk setiap pilihan jawaban
-    const form = document.getElementById('quizForm');
-    form.addEventListener('change', updateProgressBar);
-
-    // Submit form untuk menunjukkan hasil (bisa dikembangkan lebih lanjut)
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      alert('Jawaban telah terkirim!');
-    });
-  </script>
+        // Function to update the progress bar
+        function updateProgressBar() {
+            const completedAnswers = Object.values(savedQuestions).filter(Boolean).length;
+            const progress = (completedAnswers / 3) * 100;
+            document.getElementById("progress-bar").style.width = progress + "%";
+        }
+    </script>
 </body>
 </html>
