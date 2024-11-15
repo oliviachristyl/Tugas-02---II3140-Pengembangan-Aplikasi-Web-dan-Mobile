@@ -70,7 +70,7 @@
             <div id="notification3" class="notification"></div>
         </div>
         <button type="button" id="submitBtn" onclick="submitQuiz()">Submit</button>
-        <button onclick="window.location.href='index.html'" class="button">
+        <button onclick="window.location.href='index.html'" type="button">
           Kembali
         </button>
     </form>
@@ -261,9 +261,8 @@
 
         // Function to disable the form after submission
         function disableForm() {
-            const formElements = document.querySelectorAll('input, button');
-            formElements.forEach(element => element.disabled = true);
-        }
+          document.getElementById('submitBtn').disabled = true; 
+      }
     </script>
 </body>
 </html>
