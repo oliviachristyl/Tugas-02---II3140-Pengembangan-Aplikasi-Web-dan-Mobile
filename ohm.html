@@ -30,29 +30,30 @@
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
 
-      // Fungsi untuk logout
-      async function logout() {
-        try {
-          await signOut(auth);
-          alert("Logout berhasil!");
-          window.location.href = "auth.html"; // Arahkan ke halaman login setelah logout
-        } catch (error) {
-          alert(`Logout gagal: ${error.message}`);
-        }
-      }
-
-      // Event listener untuk tombol logout
-      window.addEventListener("load", () => {
-        document.getElementById("logoutButton").addEventListener("click", logout);
-
-        // Memeriksa status autentikasi saat halaman dimuat
-        onAuthStateChanged(auth, (user) => {
-          if (!user) {
-            // Jika tidak ada pengguna yang login, arahkan ke halaman auth.html
-            window.location.href = "auth.html";
+        // Fungsi untuk logout
+        async function logout() {
+          try {
+            await signOut(auth);
+            alert("Logout berhasil!");
+            // Arahkan pengguna ke halaman login (auth.html) setelah logout
+            window.location.href = "auth.html"; // Pastikan ini mengarah ke halaman login
+          } catch (error) {
+            alert(`Logout gagal: ${error.message}`);
           }
+        }
+
+        // Event listener untuk tombol logout
+        window.addEventListener("load", () => {
+          document.getElementById("logoutButton").addEventListener("click", logout);
+
+          // Memeriksa status autentikasi saat halaman dimuat
+          onAuthStateChanged(auth, (user) => {
+            if (!user) {
+              // Jika tidak ada pengguna yang login, arahkan ke halaman auth.html
+              window.location.href = "auth.html";
+            }
+          });
         });
-      });
     </script>
   </head>
   <body>

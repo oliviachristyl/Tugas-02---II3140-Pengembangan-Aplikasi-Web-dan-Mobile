@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Latihan Firebase</title>
     <style>
-        /* Styling for the progress bar */
         .progress-container {
             width: 100%;
             background-color: #f3f3f3;
@@ -18,7 +17,6 @@
             background-color: #4caf50;
             border-radius: 10px;
         }
-        /* Styling for notification */
         .notification {
             margin-top: 10px;
             padding: 10px;
@@ -32,6 +30,22 @@
         .error {
             background-color: red;
         }
+        button[type="button"] {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button[type="button"]:disabled {
+            background-color: gray;
+            cursor: not-allowed;
+        }
+        #finalResult p {
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
@@ -43,32 +57,38 @@
             <button type="button" onclick="saveAnswer('q1')">Save</button>
             <div id="notification1" class="notification"></div>
         </div>
-
         <div>
             <label for="q2">Bagaimana rumus Hukum Ohm?</label>
             <input type="text" id="q2" required>
             <button type="button" onclick="saveAnswer('q2')">Save</button>
             <div id="notification2" class="notification"></div>
         </div>
-
         <div>
             <label for="q3">Apa satuan yang digunakan dalam Hukum Ohm?</label>
             <input type="text" id="q3" required>
             <button type="button" onclick="saveAnswer('q3')">Save</button>
             <div id="notification3" class="notification"></div>
         </div>
+        <button type="button" id="submitBtn" onclick="submitQuiz()">Submit</button>
     </form>
 
     <div class="progress-container">
         <div id="progress-bar" class="progress-bar"></div>
     </div>
 
+    <div id="finalResult" style="display: none;">
+        <h2>Hasil Akhir:</h2>
+        <p id="score"></p>
+        <p id="correctAnswers"></p>
+    </div>
+
     <script type="module">
         // Firebase SDK Imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-        // Konfigurasi Firebase
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyD7jiVEry9wX_5b4f8GFr96ke8-ZVex4Vw",
             authDomain: "vlabproject-33d46.firebaseapp.com",
@@ -79,20 +99,47 @@
             appId: "1:415904434692:web:26a6e91b396ec069af0351",
         };
 
-        // Inisialisasi Firebase
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+        const auth = getAuth(app);
 
-        // Track saved answers
+        let userEmail = null; // Variable to store logged-in user's email
+
+        // Monitor authentication state
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                userEmail = user.email;
+                loadPreviousAnswers();
+                loadPreviousScore();
+            } else {
+                userEmail = null;
+                alert("User is not logged in!");
+                window.location.href = "auth.html";
+            }
+        });
+
         const savedQuestions = { q1: false, q2: false, q3: false };
+
+        const correctAnswers = {
+            q1: "Hukum Ohm adalah hubungan antara tegangan, arus, dan hambatan.",
+            q2: "V = I * R",
+            q3: "Ohm"
+        };
 
         // Function to save the answer
         window.saveAnswer = function(questionId) {
+            if (!userEmail) {
+                alert("Please log in first.");
+                window.location.href = "auth.html";
+                return;
+            }
+
             const answer = document.getElementById(questionId).value;
             const notification = document.getElementById('notification' + questionId.charAt(1));
 
             if (answer.trim() !== "") {
-                const userRef = ref(db, 'answers/' + questionId);
+                const userRef = ref(db, 'user/' + userEmail.replace('.', ',') + '/' + questionId);
                 set(userRef, {
                     answer: answer,
                     timestamp: new Date().toISOString()
@@ -126,6 +173,96 @@
             const completedAnswers = Object.values(savedQuestions).filter(Boolean).length;
             const progress = (completedAnswers / 3) * 100;
             document.getElementById("progress-bar").style.width = progress + "%";
+        }
+
+        // Function to load previous answers if available
+        function loadPreviousAnswers() {
+            if (userEmail) {
+                const userRef = ref(db, 'user/' + userEmail.replace('.', ','));
+                get(userRef).then(snapshot => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        Object.keys(data).forEach(questionId => {
+                            if (data[questionId].answer) {
+                                document.getElementById(questionId).value = data[questionId].answer;
+                                savedQuestions[questionId] = true;
+                            }
+                        });
+                        updateProgressBar();
+                    }
+                });
+            }
+        }
+
+        // Function to load previous score and show detailed results
+        function loadPreviousScore() {
+            if (userEmail) {
+                const scoreRef = ref(db, 'score/' + userEmail.replace('.', ','));
+                get(scoreRef).then(snapshot => {
+                    if (snapshot.exists()) {
+                        const scoreData = snapshot.val();
+                        if (scoreData.nilai) {
+                            // Show score and detailed answers (Correct/Incorrect)
+                            const userRef = ref(db, 'user/' + userEmail.replace('.', ','));
+                            get(userRef).then(snapshot => {
+                                if (snapshot.exists()) {
+                                    const data = snapshot.val();
+                                    let correctAnswersText = "";
+                                    Object.keys(correctAnswers).forEach(questionId => {
+                                        const userAnswer = data[questionId]?.answer || '';
+                                        const isCorrect = userAnswer === correctAnswers[questionId];
+                                        correctAnswersText += `<li>Jawaban untuk ${questionId}: "${correctAnswers[questionId]}" (${isCorrect ? 'Correct' : 'Incorrect'})</li>`;
+                                    });
+
+                                    // Round the score to remove decimals
+                                    const roundedScore = Math.round(scoreData.nilai);
+                                    document.getElementById('score').textContent = `Nilai: ${roundedScore}`;
+                                    document.getElementById('correctAnswers').innerHTML = `Jawaban yang benar: <ul>${correctAnswersText}</ul>`;
+                                    document.getElementById('finalResult').style.display = "block";
+                                    disableForm();
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        }
+
+        // Function to submit the quiz
+        window.submitQuiz = function() {
+            if (!userEmail) {
+                alert("Please log in first.");
+                window.location.href = "auth.html";
+                return;
+            }
+
+            const userRef = ref(db, 'score/' + userEmail.replace('.', ','));
+            const score = calculateScore();
+            set(userRef, {
+                nilai: score,
+                timestamp: new Date().toISOString()
+            })
+            .then(() => {
+                loadPreviousScore(); // Refresh the score view after submission
+            });
+        }
+
+        // Function to calculate score
+        function calculateScore() {
+            let score = 0;
+            Object.keys(correctAnswers).forEach(questionId => {
+                const userAnswer = document.getElementById(questionId).value;
+                if (userAnswer.trim() === correctAnswers[questionId]) {
+                    score += 100 / Object.keys(correctAnswers).length;
+                }
+            });
+            return score;
+        }
+
+        // Function to disable the form after submission
+        function disableForm() {
+            const formElements = document.querySelectorAll('input, button');
+            formElements.forEach(element => element.disabled = true);
         }
     </script>
 </body>
